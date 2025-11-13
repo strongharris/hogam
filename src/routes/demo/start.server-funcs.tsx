@@ -19,15 +19,12 @@ const TODOS_FILE = 'todos.json'
 type Todo = { id: number; name: string }
 
 async function readTodos(): Promise<Todo[]> {
-  try {
-    const file = Bun.file(TODOS_FILE)
-		return file.json();
-  } catch {
-    return [
+  return Bun.file(TODOS_FILE)
+    .json()
+    .catch(() => [
       { id: 1, name: 'Get groceries' },
       { id: 2, name: 'Buy a new phone' },
-    ]
-  }
+    ])
 }
 
 const getTodos = createServerFn({
