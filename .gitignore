@@ -12,3 +12,12 @@ count.txt
 .vinxi
 todos.json
 .vscode
+
+# Paraglide generated files
+src/paraglide
+
+# Drizzle generated files
+drizzle
+
+# Convex generated files
+convex/_generated
