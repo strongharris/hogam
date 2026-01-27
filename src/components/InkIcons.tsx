@@ -83,7 +83,7 @@ export const TigerLogo: React.FC<IconProps> = ({ className }) => {
 
   return (
     <img
-      src="/tiger-logo.png"
+      src="/hogam-logo.png"
       alt="Hogam Tiger Logo"
       className={`object-contain ${className}`}
       onError={() => setImageError(true)}

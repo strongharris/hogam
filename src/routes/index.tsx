@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { Play, BookOpen, Star, Volume2, Sparkles, ArrowRight, Check } from 'lucide-react';
 import { HanjiBackground } from '@/components/HanjiBackground';
-import { BookIcon, MountainIcon, StrawberryIcon, TigerLogo } from '@/components/InkIcons';
+import { MountainIcon, StrawberryIcon } from '@/components/InkIcons';
+import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -13,7 +14,7 @@ export const Route = createFileRoute('/')({ component: LandingPage });
 const SAMPLE_WORDS: VocabCard[] = [
   { id: '1', hangul: '딸기', romanization: 'Ttal-gi', english: 'Strawberry', category: 'Food' },
   { id: '2', hangul: '산', romanization: 'San', english: 'Mountain', category: 'Nature' },
-  { id: '3', hangul: '책', romanization: 'Chaek', english: 'Book', category: 'Object' },
+  { id: '3', hangul: '호랑이', romanization: 'Ho-rang-i', english: 'Tiger', category: 'Animal' },
 ];
 
 function LandingPage() {
@@ -29,14 +30,41 @@ function LandingPage() {
     switch (wordId) {
       case '1': return <StrawberryIcon className="w-40 h-40 mx-auto text-forest/90" />;
       case '2': return <MountainIcon className="w-40 h-40 mx-auto text-forest/90" />;
-      case '3': return <BookIcon className="w-40 h-40 mx-auto text-forest/90" />;
-      default: return <BookIcon className="w-40 h-40 mx-auto text-forest/90" />;
+      case '3': return <img src="/hogam-logo.png" alt="Tiger" className="w-40 h-40 mx-auto object-contain" />;
+      default: return <StrawberryIcon className="w-40 h-40 mx-auto text-forest/90" />;
     }
   };
 
   return (
     <div className="min-h-screen font-sans text-ink selection:bg-forest selection:text-white relative overflow-x-hidden pb-20">
       <HanjiBackground />
+
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between bg-white/80 backdrop-blur-md rounded-full px-6 py-3 shadow-soft border border-white/50">
+            {/* Logo */}
+            <Logo />
+
+            {/* Nav Links */}
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#features" className="text-sm font-medium text-ink/70 hover:text-forest transition-colors">Features</a>
+              <a href="#demo" className="text-sm font-medium text-ink/70 hover:text-forest transition-colors">Demo</a>
+              <a href="#pricing" className="text-sm font-medium text-ink/70 hover:text-forest transition-colors">Pricing</a>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="sm" className="hidden sm:inline-flex" asChild>
+                <a href="/dashboard">Log in</a>
+              </Button>
+              <Button size="sm" asChild>
+                <a href="/dashboard">Get Started</a>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
 
       {/* Hero Section */}
       <header className="pt-40 pb-20 px-6 relative">
@@ -47,13 +75,13 @@ function LandingPage() {
           </div>
 
           <h1 className="text-6xl md:text-8xl font-serif font-medium mb-8 leading-[1.1] tracking-tight text-forest animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-            Don't memorize, <br/>
-            <span className="italic text-persimmon">just absorb.</span>
+            Korean that <br/>
+            <span className="italic text-persimmon">stays with you.</span>
           </h1>
 
           <p className="text-xl md:text-2xl text-ink/60 max-w-2xl mx-auto mb-12 leading-relaxed font-light animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-            The vocabulary app that respects your brain. <br className="hidden md:block"/>
-            Beautiful visuals, context-first learning, and zero clutter.
+            Spaced repetition meets beautiful design. <br className="hidden md:block"/>
+            Learn vocabulary the way your brain actually works.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
@@ -264,9 +292,7 @@ function LandingPage() {
         <div className="max-w-7xl mx-auto px-6">
            <div className="grid md:grid-cols-4 gap-12 mb-24">
               <div className="col-span-1">
-                 <div className="w-12 h-12 mb-6">
-                    <TigerLogo />
-                 </div>
+                 <img src="/hogam-logo.png" alt="Hogam logo" className="w-24 h-24 mb-6 object-contain" />
                  <p className="text-white/60 text-sm leading-relaxed">
                     Hogam turns vocabulary lists into <br/> visual memories.
                  </p>
