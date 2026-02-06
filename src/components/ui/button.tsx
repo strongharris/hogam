@@ -21,6 +21,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         ink: "bg-ink text-paper hover:bg-ink/80 shadow-soft",
         sage: "bg-sage text-forest hover:bg-sage/80",
+        persimmon: "bg-persimmon text-white hover:bg-persimmon/90 shadow-soft",
       },
       size: {
         default: "h-10 px-6 py-2 has-[>svg]:px-4",

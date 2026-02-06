@@ -137,3 +137,76 @@ export const StrawberryIcon: React.FC<IconProps> = ({ className }) => (
      <circle cx="60" cy="70" r="1.5" fill="currentColor" />
   </svg>
 );
+
+export const SunIcon: React.FC<IconProps> = ({ className }) => (
+  <svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Core */}
+    <circle cx="50" cy="50" r="18" fill="#F36A2D" fillOpacity="0.8" stroke="currentColor" strokeWidth="2" />
+    {/* Rays */}
+    <path d="M50 20 L 50 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M50 80 L 50 90" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M20 50 L 10 50" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M80 50 L 90 50" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M28 28 L 21 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M72 72 L 79 79" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M72 28 L 79 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M28 72 L 21 79" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    {/* Detail */}
+    <circle cx="50" cy="50" r="12" stroke="#F89B63" strokeWidth="1" strokeDasharray="2 4" opacity="0.6" />
+  </svg>
+);
+
+export const MoonIcon: React.FC<IconProps> = ({ className }) => (
+  <svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M70 20 C 60 20 40 30 40 50 C 40 70 60 80 70 80 C 50 85 20 65 20 40 C 20 20 50 10 70 20 Z"
+      fill="#FCD34D" fillOpacity="0.8" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+    {/* Craters/Texture */}
+    <circle cx="45" cy="45" r="2" fill="currentColor" fillOpacity="0.2" />
+    <circle cx="35" cy="55" r="1.5" fill="currentColor" fillOpacity="0.2" />
+    <circle cx="50" cy="65" r="3" fill="currentColor" fillOpacity="0.1" />
+    {/* Stars */}
+    <path d="M80 30 L 82 32 L 80 34 L 78 32 Z" fill="currentColor" />
+    <path d="M85 60 L 86 61 L 85 62 L 84 61 Z" fill="currentColor" />
+  </svg>
+);
+
+export const WaterIcon: React.FC<IconProps> = ({ className }) => (
+  <svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Droplet */}
+    <path d="M50 15 C 50 15 20 50 20 65 C 20 82 33 95 50 95 C 67 95 80 82 80 65 C 80 50 50 15 50 15 Z"
+      fill="#3B82F6" fillOpacity="0.6" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+    {/* Highlight */}
+    <path d="M35 60 Q 35 50 45 40" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+    {/* Ripples */}
+    <path d="M10 85 Q 50 105 90 85" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
+  </svg>
+);
+
+export const FireIcon: React.FC<IconProps> = ({ className }) => (
+  <svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Outer Flame */}
+    <path d="M50 15 C 50 15 20 45 20 70 C 20 85 35 95 50 95 C 65 95 80 85 80 70 C 80 45 50 15 50 15 Z"
+      fill="#F36A2D" fillOpacity="0.8" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+    {/* Inner Flame */}
+    <path d="M50 40 C 50 40 35 60 35 75 C 35 85 42 90 50 90 C 58 90 65 85 65 75 C 65 60 50 40 50 40 Z"
+      fill="#FCD34D" fillOpacity="0.9" stroke="none" />
+    <path d="M50 40 C 50 40 35 60 35 75 C 35 85 42 90 50 90 C 58 90 65 85 65 75 C 65 60 50 40 50 40"
+      stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" opacity="0.5"/>
+  </svg>
+);
+
+export const TreeIcon: React.FC<IconProps> = ({ className }) => (
+  <svg viewBox="0 0 100 100" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Trunk */}
+    <path d="M45 60 L 45 90 L 35 95 M 55 60 L 55 90 L 65 95" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="#D7964F" fillOpacity="0.8" />
+    <path d="M45 90 L 55 90" stroke="currentColor" strokeWidth="2" />
+
+    {/* Leaves - Cloud shape */}
+    <path d="M30 60 C 10 60 10 30 30 25 C 30 10 70 10 70 25 C 90 30 90 60 70 60 C 70 75 30 75 30 60 Z"
+      fill="#0D3328" fillOpacity="0.8" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+
+    {/* Leaf Details */}
+    <path d="M40 35 L 45 45" stroke="white" strokeWidth="1" opacity="0.4" strokeLinecap="round" />
+    <path d="M60 30 L 55 40" stroke="white" strokeWidth="1" opacity="0.4" strokeLinecap="round" />
+  </svg>
+);
