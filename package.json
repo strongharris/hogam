@@ -13,7 +13,6 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@convex-dev/react-query": "^0.1.0",
     "@neondatabase/serverless": "^1.0.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-label": "^2.1.8",
@@ -26,7 +25,6 @@
     "@t3-oss/env-core": "^0.13.10",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-devtools": "^0.7.0",
-    "@tanstack/react-form": "^1.27.7",
     "@tanstack/react-query": "^5.90.17",
     "@tanstack/react-query-devtools": "^5.91.2",
     "@tanstack/react-router": "^1.132.0",
@@ -37,10 +35,8 @@
     "@trpc/client": "^11.8.1",
     "@trpc/server": "^11.8.1",
     "@trpc/tanstack-react-query": "^11.8.1",
-    "@workos-inc/authkit-react": "^0.16.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "convex": "^1.31.4",
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",
     "lucide-react": "^0.544.0",
@@ -53,9 +49,6 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
-    "@content-collections/core": "^0.13.1",
-    "@content-collections/vite": "^0.2.8",
-    "@inlang/paraglide-js": "^2.9.0",
     "@tanstack/devtools-vite": "^0.4.1",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",

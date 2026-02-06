@@ -2,20 +2,16 @@ import { useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
 import { Play, BookOpen, Star, Volume2, Sparkles, ArrowRight, Check } from 'lucide-react';
 import { HanjiBackground } from '@/components/HanjiBackground';
-import { MountainIcon, StrawberryIcon } from '@/components/InkIcons';
-import { Logo } from '@/components/Logo';
+import { TigerLogo } from '@/components/icons';
+import { renderWordIcon } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import type { VocabCard } from '@/types/vocab';
+import { LandingNav } from '@/components/layout/LandingNav';
+import { LandingFooter } from '@/components/layout/LandingFooter';
+import { SAMPLE_WORDS } from '@/data/mock';
 
 export const Route = createFileRoute('/')({ component: LandingPage });
-
-const SAMPLE_WORDS: VocabCard[] = [
-  { id: '1', hangul: '딸기', romanization: 'Ttal-gi', english: 'Strawberry', category: 'Food' },
-  { id: '2', hangul: '산', romanization: 'San', english: 'Mountain', category: 'Nature' },
-  { id: '3', hangul: '호랑이', romanization: 'Ho-rang-i', english: 'Tiger', category: 'Animal' },
-];
 
 function LandingPage() {
   const [activeWordIndex, setActiveWordIndex] = useState(0);
@@ -26,45 +22,16 @@ function LandingPage() {
     setActiveWordIndex((prev) => (prev + 1) % SAMPLE_WORDS.length);
   };
 
-  const renderIcon = (wordId: string) => {
-    switch (wordId) {
-      case '1': return <StrawberryIcon className="w-40 h-40 mx-auto text-forest/90" />;
-      case '2': return <MountainIcon className="w-40 h-40 mx-auto text-forest/90" />;
-      case '3': return <img src="/hogam-logo.png" alt="Tiger" className="w-40 h-40 mx-auto object-contain" />;
-      default: return <StrawberryIcon className="w-40 h-40 mx-auto text-forest/90" />;
-    }
+  /** Landing page uses TigerLogo for the tiger word (hogam-logo.png). */
+  const renderHeroIcon = (wordId: string) => {
+    if (wordId === '3') return <TigerLogo className="w-40 h-40 mx-auto" />;
+    return renderWordIcon(wordId, 'w-40 h-40 mx-auto text-forest/90');
   };
 
   return (
     <div className="min-h-screen font-sans text-ink selection:bg-forest selection:text-white relative overflow-x-hidden pb-20">
       <HanjiBackground />
-
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between bg-white/80 backdrop-blur-md rounded-full px-6 py-3 shadow-soft border border-white/50">
-            {/* Logo */}
-            <Logo />
-
-            {/* Nav Links */}
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-sm font-medium text-ink/70 hover:text-forest transition-colors">Features</a>
-              <a href="#demo" className="text-sm font-medium text-ink/70 hover:text-forest transition-colors">Demo</a>
-              <a href="#pricing" className="text-sm font-medium text-ink/70 hover:text-forest transition-colors">Pricing</a>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" className="hidden sm:inline-flex" asChild>
-                <a href="/dashboard">Log in</a>
-              </Button>
-              <Button size="sm" asChild>
-                <a href="/dashboard">Get Started</a>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <LandingNav />
 
       {/* Hero Section */}
       <header className="pt-40 pb-20 px-6 relative">
@@ -106,7 +73,7 @@ function LandingPage() {
                     </div>
 
                     <div className="text-center transform transition-transform duration-500 group-hover:scale-105">
-                       {renderIcon(activeWord.id)}
+                       {renderHeroIcon(activeWord.id)}
                        <h2 className="text-6xl font-korean font-bold mt-8 text-ink">{activeWord.hangul}</h2>
                        <p className="text-sm font-bold text-ink/40 mt-4 uppercase tracking-[0.2em]">Daily Word</p>
                     </div>
@@ -287,60 +254,7 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-forest text-paper pt-24 pb-12 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6">
-           <div className="grid md:grid-cols-4 gap-12 mb-24">
-              <div className="col-span-1">
-                 <img src="/hogam-logo.png" alt="Hogam logo" className="w-24 h-24 mb-6 object-contain" />
-                 <p className="text-white/60 text-sm leading-relaxed">
-                    Hogam turns vocabulary lists into <br/> visual memories.
-                 </p>
-              </div>
-
-              <div>
-                 <h4 className="font-bold mb-6 text-white">Product</h4>
-                 <ul className="space-y-4 text-sm text-white/60">
-                    <li className="hover:text-white cursor-pointer">Download</li>
-                    <li className="hover:text-white cursor-pointer">Pricing</li>
-                    <li className="hover:text-white cursor-pointer">Methodology</li>
-                 </ul>
-              </div>
-
-              <div>
-                 <h4 className="font-bold mb-6 text-white">Company</h4>
-                 <ul className="space-y-4 text-sm text-white/60">
-                    <li className="hover:text-white cursor-pointer">About</li>
-                    <li className="hover:text-white cursor-pointer">Careers</li>
-                    <li className="hover:text-white cursor-pointer">Blog</li>
-                 </ul>
-              </div>
-
-              <div>
-                 <h4 className="font-bold mb-6 text-white">Legal</h4>
-                 <ul className="space-y-4 text-sm text-white/60">
-                    <li className="hover:text-white cursor-pointer">Privacy</li>
-                    <li className="hover:text-white cursor-pointer">Terms</li>
-                 </ul>
-              </div>
-           </div>
-
-           <div className="border-t border-white/10 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
-              <p className="text-white/40 text-xs">© 2024 Hogam Inc. Seoul, Korea.</p>
-              <div className="flex gap-6">
-                 <div className="w-5 h-5 rounded-full bg-white/20"></div>
-                 <div className="w-5 h-5 rounded-full bg-white/20"></div>
-                 <div className="w-5 h-5 rounded-full bg-white/20"></div>
-              </div>
-           </div>
-
-           <div className="mt-20">
-              <h1 className="text-[12vw] leading-none font-serif text-center text-white/10 font-bold tracking-tight select-none pointer-events-none">
-                 Hogam
-              </h1>
-           </div>
-        </div>
-      </footer>
+      <LandingFooter />
     </div>
   );
 }

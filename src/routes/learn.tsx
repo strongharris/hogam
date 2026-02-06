@@ -1,120 +1,16 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X, Check, ArrowRight, Sparkles } from 'lucide-react';
 import { HanjiBackground } from '@/components/HanjiBackground';
+import { renderWordIcon } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import {
-  StrawberryIcon,
-  MountainIcon,
-  BookIcon,
-  SunIcon,
-  MoonIcon,
-  WaterIcon,
-  FireIcon,
-  TreeIcon,
-} from '@/components/InkIcons';
-import type { StudyItem } from '@/types/vocab';
+import { STUDY_SESSION } from '@/data/mock';
+import type { AnswerStatus } from '@/types/vocab';
 
 export const Route = createFileRoute('/learn')({ component: LearnPage });
-
-// Study Session Data
-const STUDY_SESSION: StudyItem[] = [
-  {
-    id: '1',
-    hangul: '딸기',
-    romanization: 'Ttal-gi',
-    english: 'Strawberry',
-    category: 'Food',
-    context: 'The strawberries on the mountain are sweet.',
-    questionType: 'KOREAN_TO_ENGLISH',
-  },
-  {
-    id: '2',
-    hangul: '산',
-    romanization: 'San',
-    english: 'Mountain',
-    category: 'Nature',
-    context: 'We hiked up the mountain early in the morning.',
-    questionType: 'KOREAN_TO_ENGLISH',
-  },
-  {
-    id: '4',
-    hangul: '해',
-    romanization: 'Hae',
-    english: 'Sun',
-    category: 'Nature',
-    context: 'The sun rises in the east.',
-    questionType: 'IMAGE_TO_KOREAN',
-  },
-  {
-    id: '5',
-    hangul: '달',
-    romanization: 'Dal',
-    english: 'Moon',
-    category: 'Nature',
-    context: 'The full moon is bright tonight.',
-    questionType: 'IMAGE_TO_KOREAN',
-  },
-  {
-    id: '6',
-    hangul: '물',
-    romanization: 'Mul',
-    english: 'Water',
-    category: 'Nature',
-    context: 'Please give me a glass of water.',
-    questionType: 'KOREAN_TO_IMAGE',
-    distractors: ['7', '8', '3'],
-  },
-  {
-    id: '7',
-    hangul: '불',
-    romanization: 'Bul',
-    english: 'Fire',
-    category: 'Element',
-    context: 'Be careful with fire.',
-    questionType: 'KOREAN_TO_IMAGE',
-    distractors: ['6', '5', '4'],
-  },
-  {
-    id: '8',
-    hangul: '나무',
-    romanization: 'Namu',
-    english: 'Tree',
-    category: 'Nature',
-    context: 'We planted a tree in the garden.',
-    questionType: 'KOREAN_TO_IMAGE',
-    distractors: ['1', '2', '6'],
-  },
-  {
-    id: '3',
-    hangul: '책',
-    romanization: 'Chaek',
-    english: 'Book',
-    category: 'Object',
-    context: 'I read a book about Korean history.',
-    questionType: 'KOREAN_TO_ENGLISH',
-  },
-];
-
-// Icon renderer helper
-function renderIcon(wordId: string, className = 'w-32 h-32 md:w-40 md:h-40 mx-auto text-forest') {
-  const icons: Record<string, React.ReactNode> = {
-    '1': <StrawberryIcon className={className} />,
-    '2': <MountainIcon className={className} />,
-    '3': <BookIcon className={className} />,
-    '4': <SunIcon className={className} />,
-    '5': <MoonIcon className={className} />,
-    '6': <WaterIcon className={className} />,
-    '7': <FireIcon className={className} />,
-    '8': <TreeIcon className={className} />,
-  };
-  return icons[wordId] || <BookIcon className={className} />;
-}
-
-type AnswerStatus = 'idle' | 'correct' | 'incorrect';
 
 function LearnPage() {
   const navigate = useNavigate();
@@ -127,7 +23,6 @@ function LearnPage() {
 
   const currentCard = STUDY_SESSION[currentIndex];
   const progress = (currentIndex / STUDY_SESSION.length) * 100;
-  const isComplete = currentIndex >= STUDY_SESSION.length;
 
   // Shuffle image options when card changes (for KOREAN_TO_IMAGE mode)
   useEffect(() => {
@@ -233,7 +128,7 @@ function LearnPage() {
               <div className="grid md:grid-cols-2 min-h-[450px]">
                 {/* Visual Side */}
                 <div className="bg-sage/20 p-8 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-ink/5">
-                  <div className="mb-6">{renderIcon(currentCard.id)}</div>
+                  <div className="mb-6">{renderWordIcon(currentCard.id)}</div>
                   <h2 className="text-5xl font-korean font-bold text-ink mb-2">{currentCard.hangul}</h2>
                   <p className="text-xl font-serif text-ink/40">{currentCard.romanization}</p>
                 </div>
@@ -306,7 +201,7 @@ function LearnPage() {
                         Type in Korean
                       </span>
                       <div className="my-8">
-                        {renderIcon(currentCard.id, 'w-40 h-40 md:w-56 md:h-56 mx-auto text-forest drop-shadow-lg')}
+                        {renderWordIcon(currentCard.id, 'w-40 h-40 md:w-56 md:h-56 mx-auto text-forest drop-shadow-lg')}
                       </div>
                     </>
                   )}
@@ -329,7 +224,6 @@ function LearnPage() {
                             w-full bg-transparent text-center text-3xl placeholder:text-ink/20 text-ink
                             border-b-4 border-ink/10 focus:border-forest focus:outline-none py-4 transition-all
                             ${currentCard.questionType === 'IMAGE_TO_KOREAN' ? 'font-korean' : 'font-serif'}
-                            ${status === 'incorrect' ? 'border-red-500 text-red-500 animate-shake' : ''}
                             ${status === 'correct' ? 'border-forest text-forest' : ''}
                           `}
                           autoComplete="off"
@@ -357,7 +251,7 @@ function LearnPage() {
                           className="bg-sage/20 hover:bg-forest/5 border-2 border-transparent hover:border-forest/20 rounded-2xl p-6 transition-all active:scale-95 flex items-center justify-center group"
                         >
                           <div className="transform group-hover:scale-110 transition-transform duration-300">
-                            {renderIcon(optId, 'w-20 h-20 text-ink/80 group-hover:text-forest')}
+                            {renderWordIcon(optId, 'w-20 h-20 text-ink/80 group-hover:text-forest')}
                           </div>
                         </button>
                       ))}

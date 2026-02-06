@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
-import { BookIcon, MountainIcon, PencilIcon, StrawberryIcon, TigerLogo } from '@/components/InkIcons';
+import { BookIcon, MountainIcon, PencilIcon, StrawberryIcon, TigerLogo } from '@/components/icons';
 
 export const Route = createFileRoute('/design-system')({ component: DesignSystem });
 
