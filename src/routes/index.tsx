@@ -1,260 +1,454 @@
-import { useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
-import { Play, BookOpen, Star, Volume2, Sparkles, ArrowRight, Check } from 'lucide-react';
-import { HanjiBackground } from '@/components/HanjiBackground';
-import { TigerLogo } from '@/components/icons';
-import { renderWordIcon } from '@/lib/icons';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { LandingNav } from '@/components/layout/LandingNav';
-import { LandingFooter } from '@/components/layout/LandingFooter';
-import { SAMPLE_WORDS } from '@/data/mock';
+/**
+ * Landing Page - Main Version
+ *
+ * Refined editorial design with consistent typography,
+ * proper visual hierarchy, and smooth flow between sections.
+ */
+import { useEffect, useState } from 'react';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { ArrowRight, Layers, Brain, Trophy, Check } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+import { cn } from '@/lib/utils';
+import { HeroDemoCard } from '@/components/landing/HeroDemoCard';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+}
 
 export const Route = createFileRoute('/')({ component: LandingPage });
 
+const FEATURES = [
+  { id: 'srs', label: 'Spaced Repetition', icon: <Brain className="w-4 h-4" /> },
+  { id: 'hanja', label: 'Hanja Roots', icon: <Layers className="w-4 h-4" /> },
+  { id: 'levels', label: 'Level System', icon: <Trophy className="w-4 h-4" /> },
+];
+
+const FEATURE_CONTENT = {
+  srs: {
+    title: 'Your brain learns best with perfect timing.',
+    description: 'Words move through 10 stages from Learning to Burned. Each stage increases the interval between reviews. Science-backed spacing means you review right before you forget.',
+    visual: (
+      <div className="flex items-center gap-2">
+        {['4h', '8h', '1d', '2d', '1w', '2w', '1m', '4m'].map((time, i) => (
+          <div
+            key={i}
+            className={cn(
+              'rounded-lg flex items-center justify-center text-xs font-bold transition-all',
+              i < 3 ? 'w-10 h-10 bg-[#F36A2D] text-white' : 'w-8 h-8 bg-[#1a1a1a]/5 text-[#1a1a1a]/30'
+            )}
+          >
+            {time}
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  hanja: {
+    title: 'One root unlocks dozens of words.',
+    description: 'Korean vocabulary is built on Chinese characters (Hanja). Learn the building blocks and suddenly patterns emerge everywhere. 學 (학/hak) means "learning" — it appears in 학교, 학생, 과학, and hundreds more.',
+    visual: (
+      <div className="space-y-3">
+        {[
+          { word: '학교', meaning: 'School', breakdown: '學 + 校' },
+          { word: '학생', meaning: 'Student', breakdown: '學 + 生' },
+          { word: '과학', meaning: 'Science', breakdown: '科 + 學' },
+        ].map((item, i) => (
+          <div key={i} className="flex items-center justify-between bg-white/60 rounded-xl px-4 py-3">
+            <div className="flex items-center gap-3">
+              <span className="text-xl font-bold text-[#0D3328]" style={{ fontFamily: "'Gowun Dodum', sans-serif" }}>{item.word}</span>
+              <span className="text-sm text-[#1a1a1a]/50">{item.meaning}</span>
+            </div>
+            <span className="text-xs text-[#1a1a1a]/30 font-mono">{item.breakdown}</span>
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  levels: {
+    title: 'Master before moving on.',
+    description: 'No overwhelm. Each level introduces new vocabulary only when you\'ve proven mastery of the previous. Your tiger grows as you progress, keeping you motivated.',
+    visual: (
+      <div className="flex items-end justify-center gap-4">
+        {[1, 2, 3, 4, 5].map((level) => (
+          <div key={level} className="text-center">
+            <div
+              className={cn(
+                'rounded-xl flex items-center justify-center mb-2 transition-all',
+                level <= 2 ? 'bg-[#0D3328] text-white' : 'bg-[#1a1a1a]/5 text-[#1a1a1a]/20'
+              )}
+              style={{ width: 40 + level * 8, height: 40 + level * 8 }}
+            >
+              {level <= 2 ? <Check className="w-5 h-5" /> : level}
+            </div>
+            <span className="text-[10px] text-[#1a1a1a]/40 font-medium">Lv {level}</span>
+          </div>
+        ))}
+      </div>
+    ),
+  },
+};
+
 function LandingPage() {
-  const [activeWordIndex, setActiveWordIndex] = useState(0);
+  const [activeFeature, setActiveFeature] = useState<'srs' | 'hanja' | 'levels'>('srs');
 
-  const activeWord = SAMPLE_WORDS[activeWordIndex];
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Hero animations
+      gsap.from('.hero-animate', {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'power2.out',
+      });
 
-  const handleNextWord = () => {
-    setActiveWordIndex((prev) => (prev + 1) % SAMPLE_WORDS.length);
-  };
+      // Scroll-triggered sections
+      gsap.utils.toArray('.section-animate, .scroll-reveal').forEach((el: any) => {
+        gsap.from(el, {
+          y: 40,
+          opacity: 0,
+          duration: 0.7,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 88%' },
+        });
+      });
 
-  /** Landing page uses TigerLogo for the tiger word (hogam-logo.png). */
-  const renderHeroIcon = (wordId: string) => {
-    if (wordId === '3') return <TigerLogo className="w-40 h-40 mx-auto" />;
-    return renderWordIcon(wordId, 'w-40 h-40 mx-auto text-forest/90');
-  };
+      // Rolling persimmon along the curved divider — auto-playing infinite loop
+      const persimmon = document.getElementById('rolling-persimmon');
+      const divider = document.getElementById('curve-divider');
+      const curveSvg = document.getElementById('curve-svg') as unknown as SVGSVGElement;
+      const curvePath = document.getElementById('curve-border') as unknown as SVGPathElement;
+      if (persimmon && divider && curveSvg && curvePath) {
+        const svgRect = curveSvg.getBoundingClientRect();
+        const dividerRect = divider.getBoundingClientRect();
+        const w = divider.offsetWidth;
+        const persimmonSize = 52;
+
+        // Read the actual rendered curve by sampling the SVG path element.
+        // The path includes the fill lines (L1440,0 L0,0 Z) so only the
+        // first segment (the visible curve) is useful — roughly the first
+        // ~75% of total length.
+        const totalLen = curvePath.getTotalLength();
+        // The curve portion ends where the path returns to (1440,0).
+        // Find that by sampling until x wraps back. In viewBox coords the
+        // curve runs from (0,0) to (1440,0), so we need the length up to
+        // the point where viewBox x = 1440.
+        let curveLen = totalLen;
+        for (let l = 0; l <= totalLen; l += 1) {
+          const pt = curvePath.getPointAtLength(l);
+          if (pt.x >= 1439 && pt.y <= 1) {
+            curveLen = l;
+            break;
+          }
+        }
+
+        // Sample points along just the curve portion and map to screen coords.
+        // Add a downward nudge so the persimmon sits right on the visible border.
+        const yNudge = persimmonSize * 0.95;
+        const steps = 60;
+        const points: { x: number; y: number }[] = [];
+
+        // Add an off-screen entry point to the left
+        points.push({ x: -persimmonSize, y: yNudge });
+
+        for (let i = 0; i <= steps; i++) {
+          const len = (i / steps) * curveLen;
+          const svgPt = curvePath.getPointAtLength(len);
+          // Map SVG viewBox coords to screen coords relative to divider
+          const screenX = (svgPt.x / 1440) * svgRect.width + (svgRect.left - dividerRect.left);
+          const screenY = (svgPt.y / 100) * svgRect.height + (svgRect.top - dividerRect.top) + yNudge;
+          points.push({ x: screenX, y: screenY });
+        }
+
+        // Add an off-screen exit point to the right
+        points.push({ x: w + persimmonSize, y: yNudge });
+
+        // Calculate arc length for rotation that matches actual distance
+        let arcLength = 0;
+        for (let i = 1; i < points.length; i++) {
+          const dx = points[i].x - points[i - 1].x;
+          const dy = points[i].y - points[i - 1].y;
+          arcLength += Math.sqrt(dx * dx + dy * dy);
+        }
+        const circumference = Math.PI * persimmonSize;
+        const totalRotation = (arcLength / circumference) * 360;
+
+        // Position persimmon so its bottom edge sits on the curve
+        gsap.set(persimmon, { xPercent: -50, yPercent: -100 });
+
+        gsap.to(persimmon, {
+          motionPath: {
+            path: points,
+            type: 'thru',
+            curviness: 1.2,
+          },
+          rotation: totalRotation,
+          duration: 12,
+          ease: 'sine.inOut',
+          repeat: -1,
+          repeatDelay: 1.5,
+        });
+      }
+    });
+    return () => ctx.revert();
+  }, []);
+
+  const feature = FEATURE_CONTENT[activeFeature];
 
   return (
-    <div className="min-h-screen font-sans text-ink selection:bg-forest selection:text-white relative overflow-x-hidden pb-20">
-      <HanjiBackground />
-      <LandingNav />
+    <div className="min-h-screen bg-[#FFFBF7] text-[#1a1a1a] antialiased overflow-x-hidden">
+      <style>{`
+        @keyframes wiggle {
+          0%, 100% { transform: rotate(-3deg); }
+          50% { transform: rotate(3deg); }
+        }
+      `}</style>
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FFFBF7]/80 backdrop-blur-xl border-b border-[#1a1a1a]/5">
+        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3">
+            <img
+              src="/hogam-logo.png"
+              alt="Hogam"
+              className="w-20 h-20 object-contain animate-[wiggle_1.5s_ease-in-out_infinite]"
+              style={{ transformOrigin: 'center bottom' }}
+            />
+            <span className="text-xl font-semibold text-[#0D3328] leading-none">Hogam</span>
+          </Link>
+          <div className="hidden md:flex items-center gap-8">
+            <a href="#how" className="text-sm text-[#1a1a1a]/60 hover:text-[#0D3328] transition-colors">How it works</a>
+            <a href="#companion" className="text-sm text-[#1a1a1a]/60 hover:text-[#0D3328] transition-colors">Your Tiger</a>
+            <a href="#start" className="text-sm text-[#1a1a1a]/60 hover:text-[#0D3328] transition-colors">Features</a>
+          </div>
+          <div className="flex items-center gap-4">
+            <a href="/login" className="text-sm text-[#1a1a1a]/60 hover:text-[#0D3328] transition-colors hidden sm:block">Log in</a>
+            <a href="/dashboard" className="bg-[#F36A2D] text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-[#F36A2D]/90 transition-colors">
+              Try Free
+            </a>
+          </div>
+        </div>
+      </nav>
 
       {/* Hero Section */}
-      <header className="pt-40 pb-20 px-6 relative">
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-sage/50 rounded-full mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-             <Star className="w-4 h-4 fill-forest text-forest" />
-             <span className="text-sm font-bold text-forest tracking-wide">Voted #1 Language App of 2024</span>
-          </div>
-
-          <h1 className="text-6xl md:text-8xl font-serif font-medium mb-8 leading-[1.1] tracking-tight text-forest animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-            Korean that <br/>
-            <span className="italic text-persimmon">stays with you.</span>
-          </h1>
-
-          <p className="text-xl md:text-2xl text-ink/60 max-w-2xl mx-auto mb-12 leading-relaxed font-light animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-            Spaced repetition meets beautiful design. <br className="hidden md:block"/>
-            Learn vocabulary the way your brain actually works.
-          </p>
-
-          <div className="flex flex-col sm:flex-row justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
-             <Button size="lg" className="min-w-[180px]">Start Learning</Button>
-             <Button variant="outline" size="lg" className="min-w-[180px]">Watch Video</Button>
-          </div>
-        </div>
-
-        {/* Hero Visual */}
-        <div className="mt-20 max-w-4xl mx-auto relative z-10 animate-in fade-in zoom-in-95 duration-1000 delay-500">
-           <div className="absolute -top-12 -left-12 w-24 h-24 bg-sage rounded-full blur-2xl opacity-60"></div>
-           <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-persimmon/20 rounded-full blur-2xl opacity-60"></div>
-
-           <Card className="relative overflow-hidden bg-white/50 backdrop-blur-sm border-white/40 border-0 p-0">
-              <div className="grid md:grid-cols-2 min-h-[500px]">
-                 {/* Visual Side */}
-                 <div className="bg-paper p-12 flex items-center justify-center border-b md:border-b-0 md:border-r border-ink/5 relative overflow-hidden group cursor-pointer" onClick={handleNextWord}>
-                    <div className="absolute top-6 left-6 flex gap-2">
-                       <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                       <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                       <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                    </div>
-
-                    <div className="text-center transform transition-transform duration-500 group-hover:scale-105">
-                       {renderHeroIcon(activeWord.id)}
-                       <h2 className="text-6xl font-korean font-bold mt-8 text-ink">{activeWord.hangul}</h2>
-                       <p className="text-sm font-bold text-ink/40 mt-4 uppercase tracking-[0.2em]">Daily Word</p>
-                    </div>
-
-                    <div className="absolute bottom-6 right-6">
-                       <div className="w-10 h-10 rounded-full bg-forest text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                          <ArrowRight className="w-5 h-5" />
-                       </div>
-                    </div>
-                 </div>
-
-                 {/* Context Side */}
-                 <div className="p-12 flex flex-col justify-center bg-white">
-                    <div className="mb-auto">
-                       <span className="text-xs font-bold text-persimmon uppercase tracking-wider mb-2 block">Definition</span>
-                       <h3 className="text-4xl font-serif font-medium text-forest mb-2">{activeWord.english}</h3>
-                       <p className="text-lg text-ink/50 italic font-serif">{activeWord.romanization}</p>
-                    </div>
-
-                    <div className="space-y-6">
-                       <div className="bg-paper rounded-2xl p-6 border border-ink/5">
-                          <div className="flex justify-between items-center mb-4">
-                             <div className="flex items-center gap-2">
-                                <Sparkles className="w-4 h-4 text-persimmon" />
-                                <span className="text-xs font-bold text-ink/60 uppercase">AI Context</span>
-                             </div>
-                             <button className="text-xs font-bold text-forest hover:underline">
-                                Generate
-                             </button>
-                          </div>
-
-                          <p className="text-sm text-ink/40 italic">Click generate to see this word used in a sentence.</p>
-                       </div>
-
-                       <div className="flex gap-3">
-                          <Badge variant="secondary">Noun</Badge>
-                          <Badge variant="secondary">Beginner</Badge>
-                          <Badge variant="secondary">{activeWord.category}</Badge>
-                       </div>
-                    </div>
-                 </div>
+      <section className="pt-44 pb-28 px-6 relative">
+        {/* Background decorations */}
+        <div className="absolute top-20 left-0 w-96 h-96 bg-[#E8D5E8]/30 rounded-full blur-3xl -z-10" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#E3EAD3]/40 rounded-full blur-3xl -z-10" />
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="max-w-xl">
+              <h1 className="hero-animate text-[2.75rem] sm:text-5xl lg:text-6xl font-serif leading-[1.1] text-[#0D3328] mb-6">
+                We don't teach Korean.
+                <br />
+                <em className="text-[#F36A2D] not-italic font-serif">We make it unforgettable.</em>
+              </h1>
+              <p className="hero-animate text-lg sm:text-xl text-[#1a1a1a]/60 mb-8 leading-relaxed">
+                Finally, Korean that doesn't feel like homework. Learn vocabulary through Hanja roots with spaced repetition that actually works.
+              </p>
+              <div className="hero-animate flex flex-wrap items-center gap-4">
+                <a
+                  href="/dashboard"
+                  className="inline-flex items-center gap-2 bg-[#0D3328] text-white pl-7 pr-6 py-3.5 rounded-full text-base font-medium hover:bg-[#0D3328]/90 transition-all group"
+                >
+                  Start Learning
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </a>
+                <span className="text-sm text-[#1a1a1a]/40">Free forever • No credit card</span>
               </div>
-           </Card>
+            </div>
+
+            {/* Right - Demo Card */}
+            <div className="hero-animate">
+              <HeroDemoCard />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Curved divider with rolling persimmon — hero to tiger */}
+      <div id="curve-divider" className="relative -mt-12 z-10 overflow-x-clip overflow-y-visible">
+        <div className="h-24 bg-white relative">
+          <svg id="curve-svg" viewBox="0 0 1440 100" className="absolute -top-px left-0 w-full h-full" preserveAspectRatio="none">
+            <path id="curve-border" d="M0,0 C480,100 960,100 1440,0 L1440,0 L0,0 Z" fill="#FFFBF7" />
+          </svg>
         </div>
 
-        {/* Social Proof */}
-        <div className="mt-24 text-center">
-           <p className="text-sm font-bold text-ink/30 uppercase tracking-widest mb-8">Trusted by polyglots at</p>
-           <div className="flex flex-wrap justify-center gap-12 opacity-40 grayscale mix-blend-multiply">
-              {['Duolingo', 'Babbel', 'Rosetta', 'Memrise', 'Coursera'].map((brand, i) => (
-                <span key={i} className="text-xl font-serif font-bold italic">{brand}</span>
+        {/* The rolling persimmon */}
+        <img
+          id="rolling-persimmon"
+          src="/persimmon.png"
+          alt=""
+          className="absolute pointer-events-none"
+          style={{
+            width: '52px',
+            height: '52px',
+            objectFit: 'contain',
+            top: '0px',
+            left: '0px',
+            zIndex: 20,
+          }}
+        />
+      </div>
+
+      {/* Tiger Companion Section */}
+      <section id="companion" className="py-24 px-6 bg-white relative overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <div className="section-animate grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Video — left side, seamless with background */}
+            <div className="relative order-2 lg:order-1 max-w-sm mx-auto lg:mx-0">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full aspect-[4/3] object-cover"
+                src="/tiger-companion.mp4"
+              />
+            </div>
+
+            {/* Text — right side */}
+            <div className="order-1 lg:order-2">
+              <p className="text-sm font-semibold tracking-wider text-[#F36A2D] uppercase mb-4">
+                Meet Your Study Companion
+              </p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-[#0D3328] leading-tight mb-6">
+                Feed your tiger.
+                <br />
+                <span className="text-[#1a1a1a]/25">Watch it grow.</span>
+              </h2>
+              <p className="text-lg text-[#1a1a1a]/55 leading-relaxed mb-8 max-w-md">
+                In Korean folklore, tigers love persimmons. Every word you master feeds your tiger — and it grows with you as you level up.
+              </p>
+
+              {/* Name origin */}
+              <div className="inline-flex items-center gap-3 px-5 py-3 bg-[#FAF9F6] rounded-2xl border border-[#1a1a1a]/5 mb-8">
+                <span className="text-lg text-[#1a1a1a]/40" style={{ fontFamily: "'Gowun Dodum', sans-serif" }}>호랑이 + 감</span>
+                <span className="text-[#1a1a1a]/20">=</span>
+                <span className="text-lg font-semibold text-[#0D3328]">Hogam</span>
+              </div>
+
+              {/* Level progression */}
+              <div className="flex items-end gap-5">
+                {[
+                  { size: 'w-8 h-8', label: 'Lv 1', opacity: 'opacity-25' },
+                  { size: 'w-10 h-10', label: 'Lv 5', opacity: 'opacity-40' },
+                  { size: 'w-12 h-12', label: 'Lv 10', opacity: 'opacity-60' },
+                  { size: 'w-14 h-14', label: 'Master', opacity: '' },
+                ].map((tier, i) => (
+                  <div key={i} className={cn('text-center', tier.opacity)}>
+                    <img src="/hogam-logo.png" alt="" className={cn('object-contain mx-auto mb-1', tier.size)} />
+                    <span className="text-[9px] font-bold tracking-wider text-[#1a1a1a]/30 uppercase block">{tier.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Curved top border for How it Works — white to purple */}
+      <div className="relative bg-[#F5EEF5]">
+        <svg viewBox="0 0 1440 100" className="block w-full" preserveAspectRatio="none" style={{ height: '96px' }}>
+          <path d="M0,0 C480,100 960,100 1440,0 L1440,0 L0,0 Z" fill="white" />
+        </svg>
+      </div>
+
+      {/* How it Works */}
+      <section id="how" className="py-20 px-6 bg-[#F5EEF5]">
+        <div className="max-w-5xl mx-auto">
+          <div className="scroll-reveal text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-serif text-[#0D3328] mb-3">How it works</h2>
+            <p className="text-base text-[#1a1a1a]/50">A proven system for lasting retention</p>
+          </div>
+
+          {/* Tab Navigation */}
+          <div className="scroll-reveal flex justify-center mb-10">
+            <div className="inline-flex bg-white rounded-full p-1.5 shadow-sm border border-[#1a1a1a]/5">
+              {FEATURES.map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => setActiveFeature(f.id as any)}
+                  className={cn(
+                    'flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all',
+                    activeFeature === f.id
+                      ? 'bg-[#0D3328] text-white'
+                      : 'text-[#1a1a1a]/50 hover:text-[#0D3328]'
+                  )}
+                >
+                  {f.icon}
+                  <span className="hidden sm:inline">{f.label}</span>
+                </button>
               ))}
-           </div>
-        </div>
-      </header>
-
-      {/* Features Section */}
-      <section id="features" className="py-32 bg-forest text-paper relative rounded-t-[3rem] -mt-10 z-20">
-         <div className="max-w-7xl mx-auto px-6">
-            <div className="mb-12 text-center">
-                <h2 className="text-4xl md:text-6xl font-serif font-medium tracking-tight text-white">Hogam is made for you</h2>
             </div>
+          </div>
 
-            <div className="flex justify-center gap-4 mb-20 flex-wrap">
-               {['Visual Learners', 'Busy Professionals', 'K-Pop Fans', 'Travelers'].map((tag, i) => (
-                  <Badge key={i} variant="outline" className="px-6 py-2 text-white/80 border-white/20 text-sm font-medium hover:bg-white/10 cursor-default">
-                     {tag}
-                  </Badge>
-               ))}
+          {/* Tab Content */}
+          <div className="scroll-reveal bg-[#E3EAD3]/30 rounded-3xl p-8 sm:p-12">
+            <div className="grid md:grid-cols-2 gap-10 items-center">
+              <div>
+                <h3 className="text-2xl sm:text-3xl font-serif text-[#0D3328] mb-4 leading-snug">
+                  {feature.title}
+                </h3>
+                <p className="text-base text-[#1a1a1a]/60 leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+              <div className="bg-white/50 rounded-2xl p-6">
+                {feature.visual}
+              </div>
             </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-               {[
-                 {
-                   title: "Personal Dictionary",
-                   desc: "Your words are automatically saved and categorized based on how well you know them.",
-                   icon: <BookOpen className="w-8 h-8" />,
-                   bg: "bg-[#0A261E]"
-                 },
-                 {
-                   title: "AI Auto-Context",
-                   desc: "Generates natural sentences instantly. No more robotic textbook examples.",
-                   icon: <Sparkles className="w-8 h-8" />,
-                   bg: "bg-[#0F392B]"
-                 },
-                 {
-                   title: "Snippet Library",
-                   desc: "Save phrases from your favorite K-Dramas and learn the vocabulary within them.",
-                   icon: <Play className="w-8 h-8" />,
-                   bg: "bg-[#0A261E]"
-                 }
-               ].map((item, i) => (
-                  <div key={i} className={`rounded-[2rem] p-10 ${item.bg} border border-white/5 hover:-translate-y-2 transition-transform duration-500`}>
-                     <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-8 text-persimmon">
-                        {item.icon}
-                     </div>
-                     <h3 className="text-2xl font-serif text-white mb-4">{item.title}</h3>
-                     <p className="text-white/60 leading-relaxed font-light">{item.desc}</p>
-                  </div>
-               ))}
-            </div>
-         </div>
-      </section>
-
-      {/* Comparison Section */}
-      <section id="demo" className="py-32 px-6 bg-paper">
-         <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-20 items-center">
-               <div>
-                  <div className="mb-4">
-                     <Badge variant="secondary" className="px-4 py-1 text-sm">4x Faster</Badge>
-                  </div>
-                  <h2 className="text-5xl md:text-6xl font-serif text-forest mb-8 leading-tight">
-                     Scientific retention. <br/>
-                     <span className="text-ink/30">Zero burnout.</span>
-                  </h2>
-                  <p className="text-xl text-ink/60 mb-10 font-light leading-relaxed">
-                     After 150 years of using the same textbook methods, voice and visual memory is finally here.
-                     When you create a connection with an image, you free up mental energy for speaking.
-                  </p>
-
-                  <ul className="space-y-4 mb-10">
-                     {[
-                       "Smart Spaced Repetition algorithms",
-                       "Native audio pronunciation",
-                       "Cultural context notes"
-                     ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-4 text-forest font-medium">
-                           <div className="w-6 h-6 rounded-full bg-sage flex items-center justify-center">
-                              <Check className="w-3 h-3 text-forest" />
-                           </div>
-                           {item}
-                        </li>
-                     ))}
-                  </ul>
-
-                  <Button size="lg">Try flow mode</Button>
-               </div>
-
-               <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-sage to-transparent rounded-[2.5rem] transform rotate-3 scale-95 opacity-50"></div>
-                  <Card className="relative bg-white min-h-[500px] flex flex-col items-center justify-center border-none shadow-2xl">
-                     <div className="w-20 h-20 rounded-full bg-forest text-white flex items-center justify-center mb-8 animate-bounce">
-                        <Volume2 className="w-8 h-8" />
-                     </div>
-                     <p className="text-sm font-bold text-ink/30 uppercase tracking-widest mb-4">Listening Mode</p>
-                     <h3 className="text-4xl font-serif text-forest text-center px-8">
-                        "The strawberries on the mountain are sweet."
-                     </h3>
-                     <div className="mt-8 flex gap-2">
-                        <div className="h-12 w-1 bg-persimmon animate-pulse"></div>
-                        <div className="h-12 w-1 bg-persimmon animate-pulse delay-75"></div>
-                        <div className="h-12 w-1 bg-persimmon animate-pulse delay-150"></div>
-                        <div className="h-12 w-1 bg-persimmon animate-pulse delay-100"></div>
-                        <div className="h-12 w-1 bg-persimmon animate-pulse delay-300"></div>
-                     </div>
-                  </Card>
-               </div>
-            </div>
-         </div>
-      </section>
-
-      {/* Pricing / CTA */}
-      <section id="pricing" className="py-32 px-6 bg-paper relative">
-        <div className="max-w-4xl mx-auto text-center">
-           <div className="mb-12 text-center">
-               <h2 className="text-4xl md:text-6xl font-serif font-medium tracking-tight text-forest">Still not sure?</h2>
-           </div>
-           <p className="text-xl text-ink/60 mb-12 font-light max-w-2xl mx-auto">
-             Try the first 50 words completely free. No credit card required.
-             Just pure visual learning.
-           </p>
-
-           <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button variant="secondary" size="lg" className="px-10">Read Philosophy</Button>
-              <Button size="lg" className="px-10">Get Started Free</Button>
-           </div>
+          </div>
         </div>
       </section>
 
-      <LandingFooter />
+      {/* Curved bottom border for How it Works — purple to white */}
+      <div className="relative bg-white h-24">
+        <svg viewBox="0 0 1440 100" className="absolute -top-px left-0 w-full h-full" preserveAspectRatio="none">
+          <path d="M0,0 L1440,0 L1440,100 C960,0 480,0 0,100 Z" fill="#F5EEF5" />
+        </svg>
+      </div>
+
+      {/* CTA Section — curved top border + forest green */}
+      <div className="relative bg-white">
+        <svg viewBox="0 0 1440 100" className="block w-full" preserveAspectRatio="none" style={{ height: '96px' }}>
+          <path d="M0,0 C480,100 960,100 1440,0 L1440,100 L0,100 Z" fill="#0D3328" />
+        </svg>
+      </div>
+      <section id="start" className="py-24 px-6 bg-[#0D3328]">
+        <div className="section-animate max-w-2xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-serif text-white mb-4">Ready to start?</h2>
+          <p className="text-lg text-white/50 mb-8">
+            Try completely free. No credit card required.
+          </p>
+          <a
+            href="/dashboard"
+            className="inline-flex items-center gap-2 bg-white text-[#0D3328] px-8 py-4 rounded-full text-base font-semibold hover:bg-white/90 transition-colors group"
+          >
+            Get Started Free
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+          </a>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-10 px-6 border-t border-[#1a1a1a]/5 bg-[#FFFBF7]">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-2">
+            <img src="/hogam-logo.png" alt="Hogam" className="w-7 h-7 object-contain opacity-60" />
+            <span className="text-sm text-[#1a1a1a]/40">Hogam</span>
+          </div>
+          <div className="flex gap-6 text-sm text-[#1a1a1a]/40">
+            <a href="#" className="hover:text-[#1a1a1a]/70 transition-colors">About</a>
+            <a href="#" className="hover:text-[#1a1a1a]/70 transition-colors">Blog</a>
+            <a href="#" className="hover:text-[#1a1a1a]/70 transition-colors">Privacy</a>
+            <a href="#" className="hover:text-[#1a1a1a]/70 transition-colors">Terms</a>
+          </div>
+        </div>
+      </footer>
+
     </div>
   );
 }

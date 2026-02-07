@@ -14,6 +14,9 @@ import {
   TreeIcon,
   TigerLogo,
   PencilIcon,
+  MovieIcon,
+  AirportIcon,
+  SingerIcon,
 } from './InkIcons';
 
 export {
@@ -27,6 +30,9 @@ export {
   TreeIcon,
   TigerLogo,
   PencilIcon,
+  MovieIcon,
+  AirportIcon,
+  SingerIcon,
 };
 
 /** Maps a vocabulary word ID to its illustration component. */
@@ -39,6 +45,9 @@ export const ICON_REGISTRY: Record<string, React.FC<{ className?: string }>> = {
   '6': WaterIcon,
   '7': FireIcon,
   '8': TreeIcon,
+  'demo-1': MovieIcon,
+  'demo-2': AirportIcon,
+  'demo-3': SingerIcon,
 };
 
 /** Default fallback icon when a word ID has no registered illustration. */

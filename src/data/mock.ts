@@ -14,6 +14,64 @@ export const SAMPLE_WORDS: VocabCard[] = [
   { id: '3', hangul: '호랑이', romanization: 'Ho-rang-i', english: 'Tiger', category: 'Animal' },
 ];
 
+/** Hanja character breakdown for vocabulary words. */
+export interface HanjaBreakdown {
+  character: string;
+  meaning: string;
+  hanja: string;
+}
+
+/** Demo word with full Hanja breakdown for landing page. */
+export interface DemoWord {
+  id: string;
+  hangul: string;
+  romanization: string;
+  english: string;
+  category: string;
+  partOfSpeech: string;
+  hanja: HanjaBreakdown[];
+}
+
+/** Demo words for landing page hero - showcasing Hanja-based learning. */
+export const DEMO_WORDS: DemoWord[] = [
+  {
+    id: 'demo-1',
+    hangul: '영화',
+    romanization: 'yeong-hwa',
+    english: 'Movie',
+    category: 'Entertainment',
+    partOfSpeech: 'Noun',
+    hanja: [
+      { character: '영', meaning: 'reflect', hanja: '映' },
+      { character: '화', meaning: 'picture', hanja: '畫' },
+    ],
+  },
+  {
+    id: 'demo-2',
+    hangul: '공항',
+    romanization: 'gong-hang',
+    english: 'Airport',
+    category: 'Travel',
+    partOfSpeech: 'Noun',
+    hanja: [
+      { character: '공', meaning: 'sky', hanja: '空' },
+      { character: '항', meaning: 'port', hanja: '港' },
+    ],
+  },
+  {
+    id: 'demo-3',
+    hangul: '가수',
+    romanization: 'ga-su',
+    english: 'Singer',
+    category: 'K-pop',
+    partOfSpeech: 'Noun',
+    hanja: [
+      { character: '가', meaning: 'song', hanja: '歌' },
+      { character: '수', meaning: 'person', hanja: '手' },
+    ],
+  },
+];
+
 /** Study session items for the learn page demo flow. */
 export const STUDY_SESSION: StudyItem[] = [
   {
